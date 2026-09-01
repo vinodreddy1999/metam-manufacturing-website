@@ -102,6 +102,20 @@ Use build and validation commands for targeted diagnosis after a remote failure,
 
 The timeout defaults can be overridden for a controlled canary with `SITES_INSTALL_TIMEOUT`, `SITES_INSTALL_KILL_AFTER`, `SITES_BUILD_TIMEOUT`, and `SITES_BUILD_KILL_AFTER`. A timeout fails the command; the helpers never retry an unchanged install or build.
 
+## Manual AWS deploy
+
+This site also runs as a plain Node process (`npm run start`), independent of Cloudflare Sites — useful for hosting it on a regular EC2 instance behind Caddy:
+
+```bash
+# one-time, on a fresh Ubuntu 22.04 box
+SITE_DOMAINS="metamservices.com, www.metamservices.com" ./deploy/aws/setup.sh
+
+# on every release
+./deploy/aws/deploy.sh
+```
+
+`setup.sh` installs Node 22, PM2, and Caddy, and wires up a Caddy reverse proxy for `SITE_DOMAINS`. `deploy.sh` pulls, reinstalls dependencies, rebuilds, and restarts the PM2-managed process. Both are idempotent — safe to re-run.
+
 ## Learn More
 
 - [vinext Documentation](https://github.com/cloudflare/vinext)
